@@ -12,5 +12,6 @@ func Register(engine *gin.Engine) {
 	apiV1 := engine.Group("/api/v1")
 	{
 		apiV1.GET("/hello", Hello)
+		apiV1.GET("/users", GetUsers)
 	}
 }

@@ -32,6 +32,14 @@ func TestInit(t *testing.T) {
 					Port: 80,
 					Mode: "release",
 				},
+				Database: DatabaseTemplate{
+					MySQL: MySQLTemplate{
+						Address:  "127.0.0.1:3306",
+						DBName:   "test",
+						Username: "test",
+						Password: "test",
+					},
+				},
 			},
 			wantErr: false,
 		},
@@ -116,6 +124,14 @@ func Test_load(t *testing.T) {
 					Host: "127.0.0.1",
 					Port: 80,
 					Mode: "release",
+				},
+				Database: DatabaseTemplate{
+					MySQL: MySQLTemplate{
+						Address:  "127.0.0.1:3306",
+						DBName:   "test",
+						Username: "test",
+						Password: "test",
+					},
 				},
 			},
 			wantErr: false,

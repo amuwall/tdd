@@ -91,3 +91,23 @@ func (r *WantResponse) Equal(gotResponseRecorder *httptest.ResponseRecorder) boo
 
 	return true
 }
+
+func RunTestAPI(t *testing.T, request *TestRequest, wantResponse *WantResponse) {
+	gotResponseRecorder, err := request.Do()
+	if err != nil {
+		t.Errorf("%s %s error = %v", request.Method, request.URL, err)
+		return
+	}
+	if !wantResponse.Equal(gotResponseRecorder) {
+		t.Errorf(
+			"%s %s gotResponse code = %d, body = %s, want code = %d, body = %s",
+			request.Method,
+			request.URL,
+			gotResponseRecorder.Code,
+			gotResponseRecorder.Body.String(),
+			wantResponse.Code,
+			wantResponse.Body.String(),
+		)
+		return
+	}
+}

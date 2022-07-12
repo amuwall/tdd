@@ -3,6 +3,16 @@ package response
 type ErrorCode int32
 
 const (
-	ErrorCodeSuccess ErrorCode = 0
-	ErrorCodeFailed  ErrorCode = 1
+	ErrorCodeSuccess ErrorCode = iota
+
+	ErrorCodeFailed
+	ErrorCodeInvalidParams
+	ErrorCodeInvalidAuth
+	ErrorCodePermissionDenied
+	ErrorCodeResourceNotExist
+	ErrorCodeInternalServerError
+	ErrorCodeDatabaseError
+	ErrorCodeInternalAPIError
+	ErrorCodeExternalAPIError
+	ErrorCodeLicenseExpire
 )

@@ -35,23 +35,7 @@ func TestHello(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotResponseRecorder, err := tt.request.Do()
-			if err != nil {
-				t.Errorf("%s %s error = %v", tt.request.Method, tt.request.URL, err)
-				return
-			}
-			if !tt.wantResponse.Equal(gotResponseRecorder) {
-				t.Errorf(
-					"%s %s gotResponse code = %d, body = %s, want code = %d, body = %s",
-					tt.request.Method,
-					tt.request.URL,
-					gotResponseRecorder.Code,
-					gotResponseRecorder.Body.String(),
-					tt.wantResponse.Code,
-					tt.wantResponse.Body.String(),
-				)
-				return
-			}
+			RunTestAPI(t, tt.request, tt.wantResponse)
 		})
 	}
 }
