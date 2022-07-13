@@ -100,3 +100,81 @@ func TestGetUsers(t *testing.T) {
 		})
 	}
 }
+
+func TestSearchUsers(t *testing.T) {
+	const testURL = "/api/v1/users/search"
+
+	type args struct {
+		Users []gomonkey.OutputCell
+	}
+
+	tests := []struct {
+		name         string
+		request      *TestRequest
+		args         args
+		wantResponse *WantResponse
+	}{
+		{
+			name: "search users",
+			request: &TestRequest{
+				Method: http.MethodPost,
+				URL:    testURL,
+				Json: map[string]interface{}{
+					"ids": []uint32{1, 2},
+				},
+			},
+			args: args{
+				Users: []gomonkey.OutputCell{
+					{
+						Values: gomonkey.Params{
+							&model.User{
+								ID:       1,
+								Username: "test",
+								Password: "test",
+							},
+							nil,
+						},
+					},
+					{
+						Values: gomonkey.Params{
+							&model.User{
+								ID:       2,
+								Username: "test2",
+								Password: "test2",
+							},
+							nil,
+						},
+					},
+				},
+			},
+			wantResponse: &WantResponse{
+				Code: http.StatusOK,
+				Body: &response.Body{
+					Code: response.ErrorCodeSuccess,
+					Msg:  "",
+					Data: gin.H{
+						"users": []*model.User{
+							{
+								ID:       1,
+								Username: "test",
+								Password: "test",
+							},
+							{
+								ID:       2,
+								Username: "test2",
+								Password: "test2",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			patches := gomonkey.ApplyFuncSeq(dao.GetUserByID, tt.args.Users)
+			defer patches.Reset()
+			RunTestAPI(t, tt.request, tt.wantResponse)
+		})
+	}
+}

@@ -16,3 +16,16 @@ func GetUsers(db *DBManager, page, pageSize uint32) (users []*model.User, err er
 
 	return
 }
+
+func GetUserByID(db *DBManager, userID uint32) (user *model.User, err error) {
+	user = &model.User{}
+	err = db.MySQL.DB.Get(
+		user, "SELECT id, username, password FROM user WHERE id=?", userID,
+	)
+	if err == sql.ErrNoRows {
+		user = nil
+		err = nil
+	}
+
+	return
+}

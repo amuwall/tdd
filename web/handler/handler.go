@@ -13,5 +13,6 @@ func Register(engine *gin.Engine) {
 	{
 		apiV1.GET("/hello", Hello)
 		apiV1.GET("/users", GetUsers)
+		apiV1.POST("/users/search", SearchUsers)
 	}
 }
