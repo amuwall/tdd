@@ -104,15 +104,15 @@ func TestGetUsers(t *testing.T) {
 func TestSearchUsers(t *testing.T) {
 	const testURL = "/api/v1/users/search"
 
-	type args struct {
+	type mock struct {
 		Users []gomonkey.OutputCell
 	}
 
 	tests := []struct {
 		name         string
 		request      *TestRequest
-		args         args
 		wantResponse *WantResponse
+		mock         mock
 	}{
 		{
 			name: "search users",
@@ -121,30 +121,6 @@ func TestSearchUsers(t *testing.T) {
 				URL:    testURL,
 				Json: map[string]interface{}{
 					"ids": []uint32{1, 2},
-				},
-			},
-			args: args{
-				Users: []gomonkey.OutputCell{
-					{
-						Values: gomonkey.Params{
-							&model.User{
-								ID:       1,
-								Username: "test",
-								Password: "test",
-							},
-							nil,
-						},
-					},
-					{
-						Values: gomonkey.Params{
-							&model.User{
-								ID:       2,
-								Username: "test2",
-								Password: "test2",
-							},
-							nil,
-						},
-					},
 				},
 			},
 			wantResponse: &WantResponse{
@@ -168,11 +144,35 @@ func TestSearchUsers(t *testing.T) {
 					},
 				},
 			},
+			mock: mock{
+				Users: []gomonkey.OutputCell{
+					{
+						Values: gomonkey.Params{
+							&model.User{
+								ID:       1,
+								Username: "test",
+								Password: "test",
+							},
+							nil,
+						},
+					},
+					{
+						Values: gomonkey.Params{
+							&model.User{
+								ID:       2,
+								Username: "test2",
+								Password: "test2",
+							},
+							nil,
+						},
+					},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			patches := gomonkey.ApplyFuncSeq(dao.GetUserByID, tt.args.Users)
+			patches := gomonkey.ApplyFuncSeq(dao.GetUserByID, tt.mock.Users)
 			defer patches.Reset()
 			RunTestAPI(t, tt.request, tt.wantResponse)
 		})
